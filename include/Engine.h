@@ -17,6 +17,8 @@
 
 #define MAX_VELOCITY 100
 
+extern bool PAUSED;
+
 void GenerateParticles();
 void GenerateChunks(int width, int height);
 

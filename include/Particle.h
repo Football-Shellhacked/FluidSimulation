@@ -2,6 +2,9 @@
 #define PARTICLE_H
 #include "raylib.h"
 
+float magnitude(Vector2 vec);
+Vector2 normalize(Vector2 vec);
+
 class Particle{
 
     public:
@@ -22,6 +25,8 @@ class Particle{
         void Repel(Particle* p);
 
         void ResolveBoundColisions();
+
+        void AddForce(Vector2 force);
 
 };
 

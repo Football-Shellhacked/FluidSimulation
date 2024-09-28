@@ -56,7 +56,9 @@ int main ()
 
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(BLACK);
-
+		if(IsKeyPressed(KEY_SPACE)){
+			PAUSED = !PAUSED;
+		}
 		ProcessParticles();
 		// draw our texture to the screen
 		
