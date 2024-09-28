@@ -4,8 +4,8 @@
 #include "Particle.h"
 
 
-#define WORLD_BOUND_X 600
-#define WORLD_BOUND_Y 400
+#define WORLD_BOUND_X 1280
+#define WORLD_BOUND_Y 800
 
 #define GRAVITY -5.0f
 
