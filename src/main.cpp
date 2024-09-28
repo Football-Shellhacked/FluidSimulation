@@ -45,7 +45,7 @@ int main ()
 	SearchAndSetResourceDir("resources");
 
 	// Load a texture from the resources directory
-	GenerateChunks(1,1);
+	GenerateChunks(6,3);
 	GenerateParticles();
 	
 	// game loop
