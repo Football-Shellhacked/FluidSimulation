@@ -4,6 +4,9 @@
 #include <time.h>
 #include "Chunk.h"
 #include "ChunkSize.h"
+#include "Pause.h"
+#include "Positions.h"
+
 
 Particle* particles = new Particle[NUM_PARTICLES];
 
@@ -12,7 +15,7 @@ Chunk** chunks;
 
 void sayHello(){
     printf("Hello World!\n");
-    printf("ByeByee World!!!\n");
+    printf("ByeBye World!\n");
 }
 int numHchunks;
 int numWchunks;
@@ -59,6 +62,7 @@ void GenerateParticles(){
         particles[i] = Particle(rand()%WORLD_BOUND_X, rand()%WORLD_BOUND_Y,0,0,5);
         particles[i].particleIndex = i;
         AssignParticleToChunks(&particles[i]);
+        particlePositions[i] = particles[i].position; 
     }
 }
 
@@ -71,6 +75,8 @@ void ProcessParticles(){
                 Particle* a = (Particle*)c.particles[k];
                 if(a != NULL){
                     DrawCircle(a->position.x, a->position.y, a->radius, BLUE); 
+
+                if(!Paused)  {
                     for(int l = 0; l < c.particles.size(); l++){
                         Particle* b = (Particle*)c.particles[l];
                         if(b!=NULL){
@@ -85,3 +91,4 @@ void ProcessParticles(){
         }
     }
 }
+}\

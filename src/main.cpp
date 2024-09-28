@@ -2,12 +2,12 @@
 #include "raylib.h"
 #include "Particle.h"
 #include <Engine.h>
-
+#include "Positions.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
-extern Particle particles[NUM_PARTICLES];
+void DrawParticles();
 
-
+bool Paused = false;
 
 int main ()
 {
@@ -19,26 +19,41 @@ int main ()
 	SearchAndSetResourceDir("resources");
 
 	GenerateChunks(1,1);
-	GenerateParticles();
+	GenerateParticles(); 
 	
 	while (!WindowShouldClose())		
 	{ 
 
-		if (IsKeyPressed(KEY_SPACE)) {
-    	Paused = !Paused; 
+		if (IsKeyPressed(KEY_SPACE)) 
+    		Paused = !Paused; 
 
-		if (Paused) 
-			DrawText("Paused", 600, 380, 40, GREEN);
-
-			}
 
 		BeginDrawing();
 
 		ClearBackground(BLACK);
 
+		
 		ProcessParticles();
 
+
+
+
 		EndDrawing();
+
+		if (Paused) {
+			DrawParticles();
+		} 
+		else {
+			ProcessParticles();
+		}
+
+
+
+		if (Paused) {
+			DrawRectangle( 1150, 60, 20, 60, WHITE);
+			DrawRectangle( 1180, 60, 20, 60, WHITE);
+					}
+		
 	}
 	
 

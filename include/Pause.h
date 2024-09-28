@@ -3,6 +3,6 @@
 
 #include "raylib.h"
 
-bool Paused = false; 
+extern bool Paused; 
 
 #endif 

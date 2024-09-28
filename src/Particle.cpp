@@ -1,6 +1,8 @@
 #include "Particle.h"
 #include "Engine.h"
 #include <cmath>
+#include "Pause.h"
+#include "Positions.h"
 
 float clamp(float val, float min, float max){
     return val > max ? max : (val < min ? min : val);
@@ -21,10 +23,15 @@ Particle::Particle(float x, float y, float vx, float vy, float radius){
 }
 
 void Particle::Update(){
+if (!Paused) {
     position.x += velocity.x * FIXED_DTIME;
     position.y += velocity.y * FIXED_DTIME;
     velocity.y -= GRAVITY * FIXED_DTIME;
     ResolveBoundColisions();
+
+    particlePositions[this - particles] = position;
+}
+
 }
 
 void Particle::ResolveBoundColisions(){

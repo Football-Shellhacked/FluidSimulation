@@ -4,7 +4,7 @@
 #include <Engine.h>
 #include "Positions.h"
 
-extern Particle particles[NUM_PARTICLES];
+std::vector<Vector2> particlePositions(NUM_PARTICLES);
 
 void DrawParticles() {
 for (int i = 0; i < NUM_PARTICLES; i++) {
