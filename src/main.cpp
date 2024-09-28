@@ -25,22 +25,27 @@ For a C++ project simply rename the file to .cpp and re-run the build script
 */
 
 #include "raylib.h"
+#include "Particle.h"
+#include <Engine.h>
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
+extern Particle particles[NUM_PARTICLES];
+
 int main ()
 {
+	sayHello();
 	// Tell the window to use vysnc and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	// Create the window and OpenGL context
-	InitWindow(1280, 800, "Hello Raylib");
+	InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y, "Hello Raylib");
 
 	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
 	SearchAndSetResourceDir("resources");
 
 	// Load a texture from the resources directory
-	Texture wabbit = LoadTexture("wabbit_alpha.png");
+	particles[0] = Particle(500, 500, 5, -10, 50);
 	
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
@@ -52,18 +57,16 @@ int main ()
 		ClearBackground(BLACK);
 
 		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
-
+		DrawCircle(particles[0].position.x, particles[0].position.y, particles[0].radius, BLUE); 
+		ProcessParticles();
 		// draw our texture to the screen
-		DrawTexture(wabbit, 400, 200, WHITE);
 		
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
 
 	// cleanup
-	// unload our texture so it can be cleaned up
-	UnloadTexture(wabbit);
+	// unload our texture so it can be cleaned u
 
 	// destory the window and cleanup the OpenGL context
 	CloseWindow();
