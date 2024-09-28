@@ -12,7 +12,7 @@ Chunk** chunks;
 
 void sayHello(){
     printf("Hello World!\n");
-    printf("ByeBye World!!\n");
+    printf("ByeByee World!!!\n");
 }
 int numHchunks;
 int numWchunks;
