@@ -59,13 +59,19 @@ int main ()
 		if(IsKeyPressed(KEY_SPACE)){
 			PAUSED = !PAUSED;
 		}
+
+		if (PAUSED) {
+		DrawRectangle(1150, 60, 20, 60, WHITE);
+		DrawRectangle(1180, 60, 20, 60, WHITE);
+		} 
+
 		ProcessParticles();
 		// draw our texture to the screen
 		
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
-
+ 
 	// cleanup
 	// unload our texture so it can be cleaned u
 
