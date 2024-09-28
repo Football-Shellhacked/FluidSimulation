@@ -21,9 +21,9 @@ Particle::Particle(float x, float y, float vx, float vy, float radius){
 }
 
 void Particle::Update(){
-    position.x += velocity.x * FIXED_DTIME;
-    position.y += velocity.y * FIXED_DTIME;
-    velocity.y -= GRAVITY * FIXED_DTIME;
+    position.x += velocity.x *FIXED_DTIME*GetFrameTime();
+    position.y += velocity.y *FIXED_DTIME*GetFrameTime();
+    velocity.y -= GRAVITY *FIXED_DTIME*GetFrameTime();
     ResolveBoundColisions();
 }
 
@@ -52,7 +52,7 @@ void Particle::Repel(Particle* p){
     float dist = magnitude(diff);
     if(dist < 0.0001f){return;}
     Vector2 dir = normalize(diff);
-    float force = (REPEL_FORCE*FIXED_DTIME)/(dist*dist);
+    float force = (REPEL_FORCE*FIXED_DTIME*GetFrameTime())/(dist*dist);
     velocity.x -= (dir.x) * force;
     velocity.y -= (dir.y) * force;
     if(magnitude(velocity) >= MAX_VELOCITY){

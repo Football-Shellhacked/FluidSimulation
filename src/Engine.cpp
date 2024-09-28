@@ -42,7 +42,9 @@ void AssignParticleToChunks(Particle* p){
         if(withinBounds(currentChunk, p)){
             return;
         }
-        currentChunk->particles.erase(currentChunk->particles.begin() + p->chunkParticleIndex);
+        std::swap(currentChunk->particles[p->chunkParticleIndex], currentChunk->particles.back());
+        ((Particle*)currentChunk->particles[p->chunkParticleIndex])->chunkParticleIndex = p->chunkParticleIndex;
+        currentChunk->particles.pop_back();
     }
     int chunkPosX = (p->position.x/WORLD_BOUND_X)*numWchunks;
     int chunkPosY = (p->position.y/WORLD_BOUND_Y)*numHchunks;
@@ -62,23 +64,31 @@ void GenerateParticles(){
 }
 
 
-void ProcessParticles(){
-    for(int i = 0; i < numWchunks; i++){
-        for(int j = 0; j < numHchunks; j++){
+void ProcessParticles() {
+    for (int i = 0; i < numWchunks; i++) {
+        for (int j = 0; j < numHchunks; j++) {
             Chunk &c = chunks[i][j];
-            for(int k = 0; k < c.particles.size(); k++){
+
+            for (int k = 0; k < c.particles.size(); k++) {
                 Particle* a = (Particle*)c.particles[k];
-                if(a != NULL){
-                    DrawCircle(a->position.x, a->position.y, a->radius, BLUE); 
-                    for(int l = 0; l < c.particles.size(); l++){
-                        Particle* b = (Particle*)c.particles[l];
-                        if(b!=NULL){
-                            if(a->particleIndex == b->particleIndex){continue;}
-                            a->Repel(b);
-                        }
-                    }
+                if (a != NULL) {
                     a->Update();
                     AssignParticleToChunks(a);
+                    DrawCircle(a->position.x, a->position.y, a->radius, BLUE);
+
+                    for (int ni = std::max(0, i - 1); ni <= std::min(numWchunks - 1, i + 1); ni++) {
+                        for (int nj = std::max(0, j - 1); nj <= std::min(numHchunks - 1, j + 1); nj++) {
+                            Chunk &neighborChunk = chunks[ni][nj];
+
+                            for (int l = 0; l < neighborChunk.particles.size(); l++) {
+                                Particle* b = (Particle*)neighborChunk.particles[l];
+                                if (b != NULL) {
+                                    if (a->particleIndex == b->particleIndex) { continue; }
+                                    a->Repel(b);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
