@@ -4,18 +4,19 @@
 #include <time.h>
 #include "Chunk.h"
 #include "ChunkSize.h"
+#include "Physics.h"
+#include "FunFeature.h"
 
-Particle* particles = new Particle[NUM_PARTICLES];
-
+int NUM_PARTICLES = 1000;
+Particle* particles;
 Chunk** chunks;
 
+bool PAUSED = false;
 
 void sayHello(){
     printf("Hello World!\n");
 }
-int numHchunks;
-int numWchunks;
-int numChunks;
+
 void GenerateChunks(int width, int height){
     numHchunks = height;
     numWchunks = width;
@@ -27,6 +28,8 @@ void GenerateChunks(int width, int height){
         chunks[i-1] = new Chunk[height];
         for(int j = 1; j <= height; j++){
             chunks[i-1][j-1].position = {(chunkSize.x/2)*i, (chunkSize.y/2)*j};
+            chunks[i-1][j-1].indX = i-1;
+            chunks[i-1][j-1].indY = j-1;
             cnt++;
         }
     }
@@ -55,9 +58,10 @@ void AssignParticleToChunks(Particle* p){
 }
 
 void GenerateParticles(){
+    particles = new Particle[NUM_PARTICLES];
     srand(time(0));
     for(int i = 0; i < NUM_PARTICLES; i++){
-        particles[i] = Particle(rand()%WORLD_BOUND_X, rand()%WORLD_BOUND_Y,0,0,5);
+        particles[i] = Particle(rand()%(WORLD_BOUND_X-300) + 150, rand()%(WORLD_BOUND_Y-150) + 75,0,0,5);
         particles[i].particleIndex = i;
         AssignParticleToChunks(&particles[i]);
     }
@@ -72,25 +76,37 @@ void ProcessParticles() {
             for (int k = 0; k < c.particles.size(); k++) {
                 Particle* a = (Particle*)c.particles[k];
                 if (a != NULL) {
-                    a->Update();
-                    AssignParticleToChunks(a);
-                    DrawCircle(a->position.x, a->position.y, a->radius, BLUE);
+                    if(!PAUSED){
+                        a->Update();
+                        AssignParticleToChunks(a);
 
-                    for (int ni = std::max(0, i - 1); ni <= std::min(numWchunks - 1, i + 1); ni++) {
-                        for (int nj = std::max(0, j - 1); nj <= std::min(numHchunks - 1, j + 1); nj++) {
-                            Chunk &neighborChunk = chunks[ni][nj];
+                        //Physics::CalculateDensity(a);
 
-                            for (int l = 0; l < neighborChunk.particles.size(); l++) {
-                                Particle* b = (Particle*)neighborChunk.particles[l];
-                                if (b != NULL) {
-                                    if (a->particleIndex == b->particleIndex) { continue; }
-                                    a->Repel(b);
-                                }
+                        //a->AddForce(Physics::CalculatePressureForce(a));
+                        if(FunFeatures::followCursor){
+                            if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+                                Vector2 mousePos = {(float)GetMouseX(), (float)GetMouseY()};
+                                Vector2 diff = {mousePos.x - a->position.x, mousePos.y - a->position.y};
+                                Vector2 dir = normalize(diff);
+                                dir.x *= 100;
+                                dir.y *= 100;
+                                a->AddForce(dir);
                             }
                         }
+
+                        a->Repel();
                     }
+                    DrawCircle(a->position.x, a->position.y, a->radius, a->color);
                 }
             }
         }
     }
+}
+
+void DeleteStuff(){
+    delete [] particles;
+    for(int i = 0; i < numWchunks; i++){
+        delete [] chunks[i];
+    }
+    delete [] chunks;
 }

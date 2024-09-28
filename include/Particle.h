@@ -2,6 +2,9 @@
 #define PARTICLE_H
 #include "raylib.h"
 
+float magnitude(Vector2 vec);
+Vector2 normalize(Vector2 vec);
+
 class Particle{
 
     public:
@@ -9,6 +12,8 @@ class Particle{
         Vector2 velocity = {0,0};
 
         float radius = 10;
+
+        Color color = BLUE;
 
         void* chunkPtr=0;
         int particleIndex=0;
@@ -19,9 +24,13 @@ class Particle{
 
         void Update();
 
-        void Repel(Particle* p);
+        void Repel();
 
         void ResolveBoundColisions();
+
+        void AddForce(Vector2 force);
+
+        void InterpolateColor();
 
 };
 

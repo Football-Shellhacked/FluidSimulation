@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include "resource_dir.h"
 
-extern Particle particles[NUM_PARTICLES];
+int amtWChunks = 10;
+int amtHChunks = 5;
 
 int main ()
 {
@@ -25,7 +26,7 @@ int main ()
 
 
 	SearchAndSetResourceDir("resources");
-	GenerateChunks(6,3);
+	GenerateChunks(amtWChunks,amtHChunks);
 	GenerateParticles();
 	
 	while (!WindowShouldClose())		
@@ -56,13 +57,16 @@ int main ()
                 if (letterCount < 0) letterCount = 0;
                 name[letterCount] = '\0';
             }
-			else if (IsKeyPressed(KEY_SPACE))
+			else if (IsKeyPressed(KEY_TAB))
 			{
 				int value = atoi(name);
 				letterCount = 0;
-				globalparticlecount = value;
-				printf("%d\n",globalparticlecount);
-				 name[letterCount] = '\0';
+				NUM_PARTICLES = value;
+				printf("%d\n",NUM_PARTICLES);
+				name[letterCount] = '\0';
+				DeleteStuff();
+				GenerateChunks(amtWChunks, amtHChunks);
+				GenerateParticles();
 
 			}
         }
@@ -75,6 +79,15 @@ int main ()
 
 		BeginDrawing();
 		ClearBackground(BLACK);
+		if(IsKeyPressed(KEY_SPACE)){
+			PAUSED = !PAUSED;
+		}
+
+		if (PAUSED) {
+		DrawRectangle(1150, 60, 20, 60, WHITE);
+		DrawRectangle(1180, 60, 20, 60, WHITE);
+		} 
+
 		ProcessParticles();
 
 
@@ -88,7 +101,6 @@ int main ()
 
 		EndDrawing();
 	}
-
 	CloseWindow();
 	return 0;
 }
