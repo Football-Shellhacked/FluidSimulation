@@ -4,8 +4,7 @@
 class FunFeatures{
 
     public:
-        static bool followCursor;
-
+        static bool cursorInteraction;
         static bool useGravity;
 
 };

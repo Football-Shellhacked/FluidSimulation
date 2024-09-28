@@ -99,6 +99,6 @@ void Particle::Repel(){
 }
 
 void Particle::AddForce(Vector2 force){
-    velocity.x = force.x * GetFrameTime()*FIXED_DTIME;
-    velocity.y = force.y * GetFrameTime()*FIXED_DTIME;
+    velocity.x += force.x * GetFrameTime()*FIXED_DTIME;
+    velocity.y += force.y * GetFrameTime()*FIXED_DTIME;
 }

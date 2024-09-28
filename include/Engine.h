@@ -7,11 +7,11 @@
 #define WORLD_BOUND_X 1280
 #define WORLD_BOUND_Y 800
 
-#define GRAVITY -4.5f
+extern float GRAVITY;
 
-#define FIXED_DTIME 10.0f
+#define FIXED_DTIME 8.0f
 
-#define REPEL_FORCE 10000
+#define REPEL_FORCE 500
 
 extern int NUM_PARTICLES;
 
