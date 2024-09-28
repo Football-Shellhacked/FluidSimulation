@@ -8,6 +8,8 @@
 #include "FunFeature.h"
 
 int NUM_PARTICLES = 1000;
+float GRAVITY = -9.8;
+
 Particle* particles;
 Chunk** chunks;
 
@@ -61,7 +63,7 @@ void GenerateParticles(){
     particles = new Particle[NUM_PARTICLES];
     srand(time(0));
     for(int i = 0; i < NUM_PARTICLES; i++){
-        particles[i] = Particle(rand()%(WORLD_BOUND_X-300) + 150, rand()%(WORLD_BOUND_Y-150) + 75,0,0,5);
+        particles[i] = Particle(rand()%(WORLD_BOUND_X-300) + 150, rand()%(WORLD_BOUND_Y-150) + 75,0,0,3);
         particles[i].particleIndex = i;
         AssignParticleToChunks(&particles[i]);
     }
@@ -83,13 +85,37 @@ void ProcessParticles() {
                         //Physics::CalculateDensity(a);
 
                         //a->AddForce(Physics::CalculatePressureForce(a));
-                        if(FunFeatures::followCursor){
+                        if(FunFeatures::cursorInteraction){
                             if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
                                 Vector2 mousePos = {(float)GetMouseX(), (float)GetMouseY()};
                                 Vector2 diff = {mousePos.x - a->position.x, mousePos.y - a->position.y};
+                                float dist = magnitude(diff);
                                 Vector2 dir = normalize(diff);
-                                dir.x *= 100;
-                                dir.y *= 100;
+                                float maxForce = 100.0f;
+                                float falloff = maxForce / (dist * dist) * 10000;  // You can adjust this formula
+
+                                // Optional: Clamp the falloff to avoid extreme forces
+                                falloff = std::max(-maxForce, std::min(falloff, maxForce));
+
+                                // Apply the falloff to the direction vector
+                                dir.x *= falloff;
+                                dir.y *= falloff;
+                                a->AddForce(dir);
+                            }
+                            if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
+                                Vector2 mousePos = {(float)GetMouseX(), (float)GetMouseY()};
+                                Vector2 diff = {mousePos.x - a->position.x, mousePos.y - a->position.y};
+                                Vector2 dir = normalize(diff);
+                                float dist = magnitude(diff);
+                                float maxForce = 100.0f;
+                                float falloff = maxForce / (dist * dist) * -5000;  // You can adjust this formula
+
+                                // Optional: Clamp the falloff to avoid extreme forces
+                                falloff = std::max(-maxForce, std::min(falloff, maxForce));
+
+                                // Apply the falloff to the direction vector
+                                dir.x *= falloff;
+                                dir.y *= falloff;
                                 a->AddForce(dir);
                             }
                         }

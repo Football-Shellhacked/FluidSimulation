@@ -1,3 +1,3 @@
 #include "FunFeature.h"
 
-bool FunFeatures::followCursor=true;
+bool FunFeatures::cursorInteraction=true;
