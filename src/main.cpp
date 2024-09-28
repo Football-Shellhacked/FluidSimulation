@@ -35,10 +35,6 @@ int main ()
 
 		ProcessParticles();
 		// draw our texture to the screen
-		
-
-        DrawCircle(WORLD_BOUND_X / 2, WORLD_BOUND_Y / 2, 50, RED);
-		
 
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
