@@ -45,7 +45,8 @@ int main ()
 	SearchAndSetResourceDir("resources");
 
 	// Load a texture from the resources directory
-	particles[0] = Particle(500, 500, 5, -10, 50);
+	GenerateChunks(1,1);
+	GenerateParticles();
 	
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
@@ -56,8 +57,6 @@ int main ()
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(BLACK);
 
-		// draw some text using the default font
-		DrawCircle(particles[0].position.x, particles[0].position.y, particles[0].radius, BLUE); 
 		ProcessParticles();
 		// draw our texture to the screen
 		
