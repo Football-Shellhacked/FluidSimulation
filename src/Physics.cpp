@@ -7,10 +7,10 @@
 
 extern Chunk** chunks;
 
-float smooth_rad_mult = 1.2f;
+float smooth_rad_mult = 5.0f;
 
-float Physics::TARGET_DENSITY=15.0f;
-float Physics::PRESSURE_MULTIPLIER=0.000001f;
+float Physics::TARGET_DENSITY=2.5f;
+float Physics::PRESSURE_MULTIPLIER=0.5f;
 float* Physics::DENSITIES = new float[NUM_PARTICLES];
 float* Physics::PROPERTIES = new float[NUM_PARTICLES];
 
@@ -178,7 +178,7 @@ Vector2 Physics::CalculatePressureForce(Particle* samplePoint) {
                 }
 
                 float sharedPressure = CalculateSharedPressure(density, DENSITIES[particle->particleIndex]);
-                float val = -sharedPressure * slope * mass / density;
+                float val = sharedPressure * slope * mass / density;
 
                 // Check for invalid force values
                 if (std::isnan(val) || std::isinf(val)) {
@@ -197,4 +197,42 @@ Vector2 Physics::CalculatePressureForce(Particle* samplePoint) {
     }
 
     return pressureForce;
+}
+
+
+Vector2 Physics::CalculateRepelForce(Particle* samplePoint){
+    Vector2 repelForce = {0, 0};
+    float smoothingRadius = samplePoint->radius * smooth_rad_mult;
+    Chunk* chunk = (Chunk*)samplePoint->chunkPtr;
+    int startChunkX = std::max(0, chunk->indX - 1);
+    int endChunkX = std::min(numWchunks - 1, chunk->indX + 1);
+    int startChunkY = std::max(0, chunk->indY - 1);
+    int endChunkY = std::min(numHchunks - 1, chunk->indY + 1);
+
+    // LOOP OVER PARTICLES IN NEIGHBORING CHUNKS
+    for (int i = startChunkX; i <= endChunkX; i++) {
+        for (int j = startChunkY; j <= endChunkY; j++) {
+            for (void* ptr : chunks[i][j].particles) {
+                Particle* particle = (Particle*)ptr;
+
+                if (particle->particleIndex == samplePoint->particleIndex)
+                    continue;
+
+                Vector2 diff = {particle->position.x - samplePoint->position.x, particle->position.y - samplePoint->position.y};
+                float dst = magnitude(diff);
+
+                // Prevent division by zero or very small distance issues
+                if (dst <= 0.001f) {
+                    continue;
+                }
+
+                Vector2 dir = normalize(diff);
+                float slope = SmoothingKernelDerivative(dst, smoothingRadius);
+                repelForce.x += dir.x * slope * REPEL_FORCE;
+                repelForce.y += dir.y * slope * REPEL_FORCE;
+            }
+        }
+    }
+    return repelForce;
+
 }

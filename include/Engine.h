@@ -7,13 +7,13 @@
 #define WORLD_BOUND_X 1280
 #define WORLD_BOUND_Y 800
 
-#define GRAVITY -9.8f
+#define GRAVITY -4.5f
 
-#define FIXED_DTIME 5.0f
+#define FIXED_DTIME 10.0f
 
-#define REPEL_FORCE 25
+#define REPEL_FORCE 10000
 
-#define NUM_PARTICLES 1000
+extern int NUM_PARTICLES;
 
 #define MAX_VELOCITY 100
 
@@ -21,6 +21,8 @@ extern bool PAUSED;
 
 void GenerateParticles();
 void GenerateChunks(int width, int height);
+
+void DeleteStuff();
 
 void ProcessParticles();
 

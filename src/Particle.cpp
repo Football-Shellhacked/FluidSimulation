@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include "Engine.h"
+#include "Physics.h"
 #include <cmath>
 #include <algorithm>
 
@@ -11,6 +12,25 @@ Particle::Particle(){
     position = {0,0};
     velocity = {0,0};
     radius = 10;
+}
+
+Color slowColor = BLUE;
+Color fastColor = WHITE;
+
+void Particle::InterpolateColor(){
+    float val = magnitude(velocity)/MAX_VELOCITY * 2;
+    if (val < 0.0f) val = 0.0f;
+    if (val > 1.0f) val = 1.0f;
+
+    // Interpolate each component separately
+    Color result;
+    result.r = static_cast<unsigned char>(std::round(BLUE.r + (WHITE.r - BLUE.r) * val));
+    result.g = static_cast<unsigned char>(std::round(BLUE.g + (WHITE.g - BLUE.g) * val));
+    result.b = static_cast<unsigned char>(std::round(BLUE.b + (WHITE.b - BLUE.b) * val));
+    result.a = static_cast<unsigned char>(std::round(BLUE.a + (WHITE.a - BLUE.a) * val));
+
+    color = result;
+
 }
 
 Particle::Particle(float x, float y, float vx, float vy, float radius){
@@ -42,6 +62,7 @@ void Particle::ResolveBoundColisions(){
 void Particle::Update() {
     // Get frame time once
     float frameTime = GetFrameTime();
+    InterpolateColor();
 
     // Update position based on velocity
     position.x += velocity.x * FIXED_DTIME * frameTime;
@@ -71,17 +92,13 @@ Vector2 normalize(Vector2 vec){
     return {vec.x/mag, vec.y/mag};
 }
 
-void Particle::Repel(Particle* p){
-    Vector2 diff = {p->position.x - position.x, p->position.y-position.y};
-    float dist = magnitude(diff);
-    if(dist < 0.0001f){return;}
-    Vector2 dir = normalize(diff);
-    float force = (REPEL_FORCE*FIXED_DTIME*GetFrameTime())/(dist*dist);
-    velocity.x -= (dir.x) * force;
-    velocity.y -= (dir.y) * force;
+void Particle::Repel(){
+    Vector2 repelForce = Physics::CalculateRepelForce(this);
+    velocity.x += repelForce.x;
+    velocity.y += repelForce.y;
 }
 
 void Particle::AddForce(Vector2 force){
-    velocity.x += force.x * GetFrameTime()*FIXED_DTIME;
-    velocity.y += force.y * GetFrameTime()*FIXED_DTIME;
+    velocity.x = force.x * GetFrameTime()*FIXED_DTIME;
+    velocity.y = force.y * GetFrameTime()*FIXED_DTIME;
 }

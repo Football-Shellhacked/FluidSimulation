@@ -19,6 +19,7 @@ class Physics{
         static Vector2 CalculatePropertyGradient(Particle* samplePoint);
         static float ConvertDensityToPressure(float density);
         static Vector2 CalculatePressureForce(Particle* samplePoint);
+        static Vector2 CalculateRepelForce(Particle* samplePoint);
    
 };
 

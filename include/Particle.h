@@ -13,6 +13,8 @@ class Particle{
 
         float radius = 10;
 
+        Color color = BLUE;
+
         void* chunkPtr=0;
         int particleIndex=0;
         int chunkParticleIndex=0;
@@ -22,11 +24,13 @@ class Particle{
 
         void Update();
 
-        void Repel(Particle* p);
+        void Repel();
 
         void ResolveBoundColisions();
 
         void AddForce(Vector2 force);
+
+        void InterpolateColor();
 
 };
 
