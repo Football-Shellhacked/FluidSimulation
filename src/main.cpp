@@ -9,11 +9,11 @@
 extern Particle* particles;
 int amtWChunks = 10;
 int amtHChunks = 5;
-
-	Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN, RAYWHITE};
-	const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN", "RAYWHITE"};
-	int selectedColorIndex = 2;
-	int fastColorIndex = 10;
+Color DARK_DARKGRAY = Color{25,25,25,255};
+Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN, RAYWHITE, BLACK, DARK_DARKGRAY};
+const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN", "RAYWHITE", "BLACK", "DARK GRAY"};
+int selectedColorIndex = 2;
+int fastColorIndex = 10;
 
 
 extern Color slowColor;
@@ -25,7 +25,7 @@ int main()
 {
     
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-    InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y+150, "Particle Simulation");
+    InitWindow(WORLD_BOUND_X+200, WORLD_BOUND_Y+150, "Particle Simulation");
 
     char particledigit[5] = "\0";
 	Rectangle particleBox = { 10, 10, 110, 50 };
@@ -49,15 +49,15 @@ int main()
     int blurStrengthLocationV = GetShaderLocation(blurVShader, "blurStrength");
     float blurStrength = 10.0f;
 
-    Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
+    Rectangle cursorCheckbox = {WORLD_BOUND_X+115, 15, 25, 25};
 
-    Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
+    Rectangle useGravityBox = {WORLD_BOUND_X+115, 80, 25, 25}; 
 
 	bool dropdownActive2 = false; 
-	Rectangle dropdownBox2 = {1065, 445, 200, 30};
+	Rectangle dropdownBox2 = {1000, 450, 190, 20};
 
 	bool dropdownActive = false; 
-	Rectangle dropdownBox = {1065, 245, 200, 30}; 
+	Rectangle dropdownBox = {1000, 125, 190, 20}; 
 	//Rectangle dropdownBox = {WORLD_BOUND_X / 2- 10, 400, 200, 30}; 
 	int dropdownSelection = -1;
 
@@ -178,18 +178,18 @@ int main()
 
         // Draw UI elements on top of the blurred texture
         if (PAUSED) {
-            DrawRectangle(1150, 60, 20, 60, LIGHTGRAY);
-            DrawRectangle(1180, 60, 20, 60, LIGHTGRAY);
+            DrawRectangle(WORLD_BOUND_X/2-15, WORLD_BOUND_Y/2 - 30, 20, 60, LIGHTGRAY);
+            DrawRectangle(WORLD_BOUND_X/2+15, WORLD_BOUND_Y/2 - 30, 20, 60, LIGHTGRAY);
         }	
 
 
 		DrawRectangleRec(dropdownBox2, LIGHTGRAY);
-		DrawText(colorNames[fastColorIndex], dropdownBox2.x + 10, dropdownBox2.y + 5, 20, RAYWHITE); 
+		DrawText(colorNames[fastColorIndex], dropdownBox2.x + 10, dropdownBox2.y+5, 15, availableColors[fastColorIndex]); 
 		DrawRectangleLines(dropdownBox2.x, dropdownBox2.y, dropdownBox2.width, dropdownBox2.height, RAYWHITE);
 
 
 		DrawRectangleRec(dropdownBox, LIGHTGRAY);
-		DrawText(colorNames[selectedColorIndex], dropdownBox.x + 10, dropdownBox.y + 5, 20, RAYWHITE); 
+		DrawText(colorNames[selectedColorIndex], dropdownBox.x + 10, dropdownBox.y+5, 15, availableColors[selectedColorIndex]); 
 		DrawRectangleLines(dropdownBox.x, dropdownBox.y, dropdownBox.width, dropdownBox.height, RAYWHITE);
 
 		if (dropdownActive)
@@ -197,9 +197,9 @@ int main()
 
 			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++)
 			{
-				Rectangle optionBox = {dropdownBox.x, dropdownBox.y + (i + 1) * 30, dropdownBox.width, 30};
+				Rectangle optionBox = {dropdownBox.x, dropdownBox.y + (i + 1) * 20, dropdownBox.width, 20};
 				DrawRectangleRec(optionBox, LIGHTGRAY);
-				DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
+				DrawText(colorNames[i], optionBox.x, optionBox.y, 15, availableColors[i]);
 				DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
 
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -221,9 +221,9 @@ int main()
 
 			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++)
 			{
-				Rectangle optionBox = {dropdownBox2.x, dropdownBox2.y + (i + 1) * 30, dropdownBox2.width, 30};
+				Rectangle optionBox = {dropdownBox2.x, dropdownBox2.y + (i + 1) * 20, dropdownBox2.width, 20};
 				DrawRectangleRec(optionBox, LIGHTGRAY);
-				DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
+				DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 15, availableColors[i]);
 				DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
 
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))

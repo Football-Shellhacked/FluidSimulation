@@ -30,7 +30,7 @@ class Particle{
 
         void AddForce(Vector2 force);
 
-        void InterpolateColor();
+        Color InterpolateColor();
 
 };
 

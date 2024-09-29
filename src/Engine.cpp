@@ -123,7 +123,7 @@ void ProcessParticles() {
 
                         a->Repel();
                     }
-                    DrawCircle(a->position.x, a->position.y, a->radius, a->color);
+                    DrawCircle(a->position.x, a->position.y, a->radius, a->InterpolateColor());
                 }
             }
         }
