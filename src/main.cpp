@@ -13,15 +13,15 @@ extern float clamp(float val, float min, float max);
 
 int main()
 {
-    int globalparticlecount = NUM_PARTICLES;
-
+    
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-    InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y, "Liquid Simulation");
+    InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y, "Particle Simulation");
 
-    char name[5] = "\0";
+    char particledigit[5] = "\0";
+	Rectangle particleBox = { 10, 10, 110, 50 };
+	Rectangle gravityBox = { 10, 100, 350, 15 };
     int letterCount = 0;
-    Rectangle textBox = { 10, 10, 110, 50 };
-    bool mouseOnText = false;
+    bool mouseOnParticle = false;
     int framesCounter = 0;
 
     SearchAndSetResourceDir("resources");
@@ -47,20 +47,20 @@ int main()
     while (!WindowShouldClose()) 
     {
         // Update input and controls
-        if (CheckCollisionPointRec(GetMousePosition(), textBox)) {
-            mouseOnText = true;
+        if (CheckCollisionPointRec(GetMousePosition(), particleBox)) {
+            mouseOnParticle = true;
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
         } else {
-            mouseOnText = false;
+            mouseOnParticle = false;
             SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         }
 
-        if (mouseOnText) {
+        if (mouseOnParticle) {
             int key = GetCharPressed();
             while (key > 0) {
                 if ((key >= 48) && (key <= 57) && (letterCount < 4)) {
-                    name[letterCount] = (int)key;
-                    name[letterCount + 1] = '\0';
+                    particledigit[letterCount] = (int)key;
+                    particledigit[letterCount + 1] = '\0';
                     letterCount++;
                 }
                 key = GetCharPressed();
@@ -69,13 +69,14 @@ int main()
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 letterCount--;
                 if (letterCount < 0) letterCount = 0;
-                name[letterCount] = '\0';
+                particledigit[letterCount] = '\0';
+
             } else if (IsKeyPressed(KEY_TAB)) {
-                int value = atoi(name);
+                int value = atoi(particledigit);
                 letterCount = 0;
                 NUM_PARTICLES = value;
                 printf("NUM_PARTICLES: %d\n", NUM_PARTICLES);
-                name[letterCount] = '\0';
+                particledigit[letterCount] = '\0';
                 DeleteStuff();
                 GenerateChunks(amtWChunks, amtHChunks);
                 GenerateParticles();
@@ -117,11 +118,14 @@ int main()
         }
 
         // Draw instructions and input box for changing particle count
-        DrawText("PLACE MOUSE OVER BOX TO CHANGE PARTICLE# AND PRESS TAB TO CONFIRM", 130, 10, 20, GRAY);
-        DrawRectangleRec(textBox, LIGHTGRAY);
-        if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
-        else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
-        DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, RED);
+        DrawText("PLACE MOUSE OVER BOX TO CHANGE PARTICLE# AND PRESS TAB TO CONFIRM", 130, 27, 20, GRAY);
+        DrawRectangleRec(particleBox, LIGHTGRAY);
+        if (mouseOnParticle) DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, RED);
+        else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
+        DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
+
+		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
+		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY);
 
         FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
 
