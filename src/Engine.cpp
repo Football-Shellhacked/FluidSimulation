@@ -63,7 +63,7 @@ void GenerateParticles(){
     particles = new Particle[NUM_PARTICLES];
     srand(time(0));
     for(int i = 0; i < NUM_PARTICLES; i++){
-        particles[i] = Particle(rand()%(WORLD_BOUND_X-300) + 150, rand()%(WORLD_BOUND_Y-150) + 75,0,0,10);
+        particles[i] = Particle(rand()%(WORLD_BOUND_X-300) + 150, rand()%(WORLD_BOUND_Y-150) + 75,0,0,5);
         particles[i].particleIndex = i;
         AssignParticleToChunks(&particles[i]);
     }
