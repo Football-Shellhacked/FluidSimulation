@@ -130,9 +130,6 @@ int main()
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
 
-		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
-		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY);
-
         EndDrawing();
     }
 
