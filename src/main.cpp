@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "resource_dir.h"
+#include "FunFeature.h"
 
 int amtWChunks = 10;
 int amtHChunks = 5;
@@ -31,13 +32,16 @@ int main()
     RenderTexture2D target = LoadRenderTexture(WORLD_BOUND_X, WORLD_BOUND_Y);
     Shader blurShader = LoadShader(0, "blur.fs");
     int blurStrengthLocation = GetShaderLocation(blurShader, "blurStrength");
-    float blurStrength = 8.0f;
+    float blurStrength = 2.0f;
 
     // Check if shader is loaded correctly
     if (blurStrengthLocation == -1) {
         printf("Failed to get shader location for 'blurStrength'\n");
     }
 
+    Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
+
+    Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
     SetTargetFPS(60);  // Set the game to run at 60 frames per second
 
     while (!WindowShouldClose()) 
@@ -92,9 +96,9 @@ int main()
         // Render to texture
         BeginTextureMode(target);
         ClearBackground(BLACK);
-        if (!PAUSED) {
-            ProcessParticles();
-        }
+
+        ProcessParticles();
+
         EndTextureMode();
 
         BeginDrawing();
@@ -118,6 +122,10 @@ int main()
         if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
         else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
         DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, RED);
+
+        FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
+
+        FunFeatures::useGravity = FunFeatures::DrawCheckboxWithLabel(useGravityBox, FunFeatures::useGravity, "Gravity Enabled", DARKGRAY); 
 
         EndDrawing();
     }
