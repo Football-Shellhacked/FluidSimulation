@@ -37,7 +37,7 @@ int main()
 
     int blurStrengthLocationH = GetShaderLocation(blurHShader, "blurStrength");
     int blurStrengthLocationV = GetShaderLocation(blurVShader, "blurStrength");
-    float blurStrength = 3.0f;
+    float blurStrength = 10.0f;
 
     Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
 
