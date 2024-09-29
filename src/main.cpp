@@ -6,13 +6,23 @@
 #include "resource_dir.h"
 #include "FunFeature.h"
 
+<<<<<<< HEAD
 int amtWChunks = 7;
 int amtHChunks = 4;
+=======
+extern Particle* particles;
+int amtWChunks = 10;
+int amtHChunks = 5;
+>>>>>>> ad8b5ff (Added color changing functionality)
 
-/* Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN};
-	const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN"};
-*/
+	Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN, RAYWHITE};
+	const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN", "RAYWHITE"};
+	int selectedColorIndex = 2;
+	int fastColorIndex = 10;
 
+
+extern Color slowColor;
+extern Color fastColor;
 
 extern float clamp(float val, float min, float max);
 
@@ -48,7 +58,19 @@ int main()
 
     Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
 
+<<<<<<< HEAD
     Rectangle repelSliderBox = { 10, 200, 350, 15 };
+=======
+	bool dropdownActive2 = false; 
+	Rectangle dropdownBox2 = {1065, 445, 200, 30};
+
+	bool dropdownActive = false; 
+	Rectangle dropdownBox = {1065, 245, 200, 30}; 
+	//Rectangle dropdownBox = {WORLD_BOUND_X / 2- 10, 400, 200, 30}; 
+	int dropdownSelection = -1;
+
+
+>>>>>>> ad8b5ff (Added color changing functionality)
 
     // Check if shaders are loaded correctly
     if (blurStrengthLocationH == -1 || blurStrengthLocationV == -1) {
@@ -59,6 +81,28 @@ int main()
 
     while (!WindowShouldClose()) 
     {
+
+		Vector2 mousePosition = GetMousePosition();
+
+		//Dropdown cursor detection
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            printf("Mouse clicked at: x = %f, y = %f\n", mousePosition.x, mousePosition.y);
+
+            // Toggle dropdown menu when clicking on the dropdown box
+            if (CheckCollisionPointRec(mousePosition, dropdownBox)) {
+                printf("Clicked on dropdown box\n");
+                dropdownActive = !dropdownActive;  // Open or close the dropdown
+
+            }
+			if (CheckCollisionPointRec(mousePosition, dropdownBox2)) {
+                printf("Clicked on dropdown box\n");
+                dropdownActive2 = !dropdownActive2;
+				
+			}
+        }
+		
+		
+
         // Update input and controls
         if (CheckCollisionPointRec(GetMousePosition(), particleBox)) {
             mouseOnParticle = true;
@@ -96,9 +140,22 @@ int main()
             }
         }
 
+
+		for (int i = 0; i < NUM_PARTICLES; i++) {
+			particles[i].color = availableColors[selectedColorIndex];
+		}
+
+
+
         if (IsKeyPressed(KEY_SPACE)) {
             PAUSED = !PAUSED;
         }
+
+
+		
+
+		
+
 
         // Update the blur strength dynamically using keyboard input
         if (IsKeyDown(KEY_UP)) blurStrength += 0.1f;
@@ -130,17 +187,75 @@ int main()
 
         // Draw UI elements on top of the blurred texture
         if (PAUSED) {
-            DrawRectangle(1150, 60, 20, 60, WHITE);
-            DrawRectangle(1180, 60, 20, 60, WHITE);
-        }
+            DrawRectangle(1150, 60, 20, 60, LIGHTGRAY);
+            DrawRectangle(1180, 60, 20, 60, LIGHTGRAY);
+        }	
 
-        // Draw instructions and input box for changing particle count
-        DrawText("PLACE MOUSE OVER BOX TO CHANGE PARTICLE# AND PRESS TAB TO CONFIRM", 130, 27, 20, GRAY);
+
+		DrawRectangleRec(dropdownBox2, LIGHTGRAY);
+		DrawText(colorNames[fastColorIndex], dropdownBox2.x + 10, dropdownBox2.y + 5, 20, RAYWHITE); 
+		DrawRectangleLines(dropdownBox2.x, dropdownBox2.y, dropdownBox2.width, dropdownBox2.height, RAYWHITE);
+
+
+		DrawRectangleRec(dropdownBox, LIGHTGRAY);
+		DrawText(colorNames[selectedColorIndex], dropdownBox.x + 10, dropdownBox.y + 5, 20, RAYWHITE); 
+		DrawRectangleLines(dropdownBox.x, dropdownBox.y, dropdownBox.width, dropdownBox.height, RAYWHITE);
+
+		
+	
+		if (dropdownActive) {
+			
+			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++) {
+                    Rectangle optionBox = {dropdownBox.x, dropdownBox.y + (i + 1) * 30, dropdownBox.width, 30};
+					DrawRectangleRec(optionBox, LIGHTGRAY);
+					DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
+					DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
+
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+						if (CheckCollisionPointRec(mousePosition, optionBox)) {
+                        printf("Clicked on option: %s\n", colorNames[i]);
+                        selectedColorIndex = i;  // Update selected color
+                        dropdownActive = false;  // Close the dropdown
+						slowColor = availableColors[i];
+                        break;
+		
+                    }
+				}
+			}	
+		}
+
+		if (dropdownActive2)
+		{
+
+			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++)
+			{
+				Rectangle optionBox = {dropdownBox2.x, dropdownBox2.y + (i + 1) * 30, dropdownBox2.width, 30};
+				DrawRectangleRec(optionBox, LIGHTGRAY);
+				DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
+				DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
+
+				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+				{
+					if (CheckCollisionPointRec(mousePosition, optionBox))
+					{
+						printf("Clicked on option: %s\n", colorNames[i]);
+						fastColorIndex = i;		 // Update selected color
+						dropdownActive2 = false; // Close the dropdown
+						fastColor = availableColors[i];
+						break;
+					}
+				}
+			}
+		}
+
+		// Draw instructions and input box for changing particle count
+        DrawText("HOVER OVER BOXZ TO INPUT PARTICLE#. TAB TO CONFIRM.", 130, 27, 20, GRAY);
         DrawRectangleRec(particleBox, LIGHTGRAY);
         if (mouseOnParticle) DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, RED);
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
 		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
+<<<<<<< HEAD
         char sliderBuf[32];
         sprintf(sliderBuf, "GRAVITY SLIDER: %0.2f", GRAVITY);
 		DrawText(sliderBuf, 370, 98, 20, GRAY);
@@ -148,6 +263,9 @@ int main()
         REPEL_FORCE = FunFeatures::DrawSlider(repelSliderBox, -1000.0f, 1000.0f, REPEL_FORCE, WHITE);
         sprintf(sliderBuf, "REPEL FORCE SLIDER: %0.2f", REPEL_FORCE);
 		DrawText(sliderBuf, 370, 200, 20, GRAY);
+=======
+		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY); 
+>>>>>>> ad8b5ff (Added color changing functionality)
 
         FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
 
@@ -165,3 +283,4 @@ int main()
     CloseWindow();
     return 0;
 }
+
