@@ -3,6 +3,7 @@
 #include "Physics.h"
 #include <cmath>
 #include <algorithm>
+#include "FunFeature.h"
 
 float clamp(float val, float min, float max){
     return val > max ? max : (val < min ? min : val);
@@ -14,20 +15,20 @@ Particle::Particle(){
     radius = 10;
 }
 
-Color slowColor = BLUE;
-Color fastColor = WHITE;
+Color slowColor = MAROON;
+Color fastColor = ORANGE;
 
 void Particle::InterpolateColor(){
-    float val = magnitude(velocity)/MAX_VELOCITY * 2;
+    float val = magnitude(velocity)/MAX_VELOCITY;
     if (val < 0.0f) val = 0.0f;
     if (val > 1.0f) val = 1.0f;
 
     // Interpolate each component separately
     Color result;
-    result.r = static_cast<unsigned char>(std::round(BLUE.r + (WHITE.r - BLUE.r) * val));
-    result.g = static_cast<unsigned char>(std::round(BLUE.g + (WHITE.g - BLUE.g) * val));
-    result.b = static_cast<unsigned char>(std::round(BLUE.b + (WHITE.b - BLUE.b) * val));
-    result.a = static_cast<unsigned char>(std::round(BLUE.a + (WHITE.a - BLUE.a) * val));
+    result.r = static_cast<unsigned char>(std::round(slowColor.r + (fastColor.r - slowColor.r) * val));
+    result.g = static_cast<unsigned char>(std::round(slowColor.g + (fastColor.g - slowColor.g) * val));
+    result.b = static_cast<unsigned char>(std::round(slowColor.b + (fastColor.b - slowColor.b) * val));
+    result.a = static_cast<unsigned char>(std::round(slowColor.a + (fastColor.a - slowColor.a) * val));
 
     color = result;
 
@@ -69,7 +70,8 @@ void Particle::Update() {
     position.y += velocity.y * FIXED_DTIME * frameTime;
 
     // Apply gravity
-    velocity.y -= GRAVITY * FIXED_DTIME * frameTime;
+    if(FunFeatures::useGravity)
+        velocity.y -= GRAVITY * FIXED_DTIME * frameTime;
 
     // Limit the velocity to prevent particles from gaining excessive speed
     if (magnitude(velocity) > MAX_VELOCITY) {
