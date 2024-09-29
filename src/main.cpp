@@ -28,20 +28,26 @@ int main()
     GenerateChunks(amtWChunks, amtHChunks);
     GenerateParticles();
 
-    // Render Texture and Shader
-    RenderTexture2D target = LoadRenderTexture(WORLD_BOUND_X, WORLD_BOUND_Y);
-    Shader blurShader = LoadShader(0, "blur.fs");
-    int blurStrengthLocation = GetShaderLocation(blurShader, "blurStrength");
-    float blurStrength = 2.0f;
+    // Render Textures and Shaders
+    RenderTexture2D sceneTexture = LoadRenderTexture(WORLD_BOUND_X, WORLD_BOUND_Y); // Scene render texture
+    RenderTexture2D blurTexture = LoadRenderTexture(WORLD_BOUND_X, WORLD_BOUND_Y);  // Temporary blur texture
 
-    // Check if shader is loaded correctly
-    if (blurStrengthLocation == -1) {
-        printf("Failed to get shader location for 'blurStrength'\n");
-    }
+    Shader blurHShader = LoadShader(0, "blur_horizontal.fs"); // Horizontal blur shader
+    Shader blurVShader = LoadShader(0, "blur_vertical.fs");   // Vertical blur shader
+
+    int blurStrengthLocationH = GetShaderLocation(blurHShader, "blurStrength");
+    int blurStrengthLocationV = GetShaderLocation(blurVShader, "blurStrength");
+    float blurStrength = 3.0f;
 
     Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
 
     Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
+
+    // Check if shaders are loaded correctly
+    if (blurStrengthLocationH == -1 || blurStrengthLocationV == -1) {
+        printf("Failed to get shader location for 'blurStrength'\n");
+    }
+
     SetTargetFPS(60);  // Set the game to run at 60 frames per second
 
     while (!WindowShouldClose()) 
@@ -88,27 +94,31 @@ int main()
         }
 
         // Update the blur strength dynamically using keyboard input
-        if (IsKeyDown(KEY_UP)) blurStrength += 1.0f;
-        if (IsKeyDown(KEY_DOWN)) blurStrength -= 1.0f;
+        if (IsKeyDown(KEY_UP)) blurStrength += 0.1f;
+        if (IsKeyDown(KEY_DOWN)) blurStrength -= 0.1f;
 
-        blurStrength = clamp(blurStrength, 0.0f, 100.0f);  // Limit blur strength between 0 and 100
-        SetShaderValue(blurShader, blurStrengthLocation, &blurStrength, SHADER_UNIFORM_FLOAT);
+        blurStrength = clamp(blurStrength, 0.1f, 5.0f);  // Limit blur strength between 0.1 and 5
+        SetShaderValue(blurHShader, blurStrengthLocationH, &blurStrength, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(blurVShader, blurStrengthLocationV, &blurStrength, SHADER_UNIFORM_FLOAT);
 
-        // Render to texture
-        BeginTextureMode(target);
+        // Render the scene to the scene texture
+        BeginTextureMode(sceneTexture);
         ClearBackground(BLACK);
-
-        ProcessParticles();
-
+        ProcessParticles(); // Render your particles or scene here
         EndTextureMode();
 
+        // Apply horizontal blur to the scene texture
+        BeginTextureMode(blurTexture);
+        BeginShaderMode(blurHShader);
+        DrawTextureRec(sceneTexture.texture, (Rectangle){0, 0, sceneTexture.texture.width, -sceneTexture.texture.height}, (Vector2){0, 0}, WHITE);
+        EndShaderMode();
+        EndTextureMode();
+
+        // Apply vertical blur to the horizontally blurred texture
         BeginDrawing();
-
         ClearBackground(BLACK);
-
-        // Apply blur shader and draw the texture
-        BeginShaderMode(blurShader);
-        DrawTextureRec(target.texture, (Rectangle){0, 0, target.texture.width, -target.texture.height}, (Vector2){0, 0}, WHITE);
+        BeginShaderMode(blurVShader);
+        DrawTextureRec(blurTexture.texture, (Rectangle){0, 0, blurTexture.texture.width, -blurTexture.texture.height}, (Vector2){0, 0}, WHITE);
         EndShaderMode();
 
         // Draw UI elements on top of the blurred texture
@@ -123,20 +133,20 @@ int main()
         if (mouseOnParticle) DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, RED);
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
-
 		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
 		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY);
 
         FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
 
         FunFeatures::useGravity = FunFeatures::DrawCheckboxWithLabel(useGravityBox, FunFeatures::useGravity, "Gravity Enabled", DARKGRAY); 
-
         EndDrawing();
     }
 
     // Unload resources and close window
-    UnloadShader(blurShader);
-    UnloadRenderTexture(target);
+    UnloadShader(blurHShader);
+    UnloadShader(blurVShader);
+    UnloadRenderTexture(sceneTexture);
+    UnloadRenderTexture(blurTexture);
     CloseWindow();
     return 0;
 }
