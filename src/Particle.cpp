@@ -15,8 +15,8 @@ Particle::Particle(){
     radius = 10;
 }
 
-Color slowColor = MAROON;
-Color fastColor = ORANGE;
+Color slowColor = BLUE;
+Color fastColor = WHITE;
 
 void Particle::InterpolateColor(){
     float val = magnitude(velocity)/MAX_VELOCITY;
