@@ -9,6 +9,7 @@
 
 int NUM_PARTICLES = 1000;
 float GRAVITY = -9.8;
+float REPEL_FORCE = 500;
 
 Particle* particles;
 Chunk** chunks;

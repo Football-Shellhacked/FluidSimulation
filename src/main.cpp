@@ -6,8 +6,8 @@
 #include "resource_dir.h"
 #include "FunFeature.h"
 
-int amtWChunks = 10;
-int amtHChunks = 5;
+int amtWChunks = 7;
+int amtHChunks = 4;
 
 extern float clamp(float val, float min, float max);
 
@@ -15,7 +15,7 @@ int main()
 {
     
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-    InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y, "Particle Simulation");
+    InitWindow(WORLD_BOUND_X, WORLD_BOUND_Y+150, "Particle Simulation");
 
     char particledigit[5] = "\0";
 	Rectangle particleBox = { 10, 10, 110, 50 };
@@ -42,6 +42,8 @@ int main()
     Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
 
     Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
+
+    Rectangle repelSliderBox = { 10, 200, 350, 15 };
 
     // Check if shaders are loaded correctly
     if (blurStrengthLocationH == -1 || blurStrengthLocationV == -1) {
@@ -134,11 +136,19 @@ int main()
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
 		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
-		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY);
+        char sliderBuf[32];
+        sprintf(sliderBuf, "GRAVITY SLIDER: %0.2f", GRAVITY);
+		DrawText(sliderBuf, 370, 98, 20, GRAY);
+
+        REPEL_FORCE = FunFeatures::DrawSlider(repelSliderBox, -1000.0f, 1000.0f, REPEL_FORCE, WHITE);
+        sprintf(sliderBuf, "REPEL FORCE SLIDER: %0.2f", REPEL_FORCE);
+		DrawText(sliderBuf, 370, 200, 20, GRAY);
 
         FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
 
-        FunFeatures::useGravity = FunFeatures::DrawCheckboxWithLabel(useGravityBox, FunFeatures::useGravity, "Gravity Enabled", DARKGRAY); 
+        FunFeatures::useGravity = FunFeatures::DrawCheckboxWithLabel(useGravityBox, FunFeatures::useGravity, "Gravity Enabled", DARKGRAY);
+
+        DrawRectangle(0, WORLD_BOUND_Y, WORLD_BOUND_X, 150, DARKGRAY);
         EndDrawing();
     }
 
