@@ -210,28 +210,48 @@ Vector2 Physics::CalculateRepelForce(Particle* samplePoint){
     int endChunkY = std::min(numHchunks - 1, chunk->indY + 1);
 
     // LOOP OVER PARTICLES IN NEIGHBORING CHUNKS
-    for (int i = startChunkX; i <= endChunkX; i++) {
-        for (int j = startChunkY; j <= endChunkY; j++) {
-            for (void* ptr : chunks[i][j].particles) {
-                Particle* particle = (Particle*)ptr;
+    // for (int i = startChunkX; i <= endChunkX; i++) {
+    //     for (int j = startChunkY; j <= endChunkY; j++) {
+    //         for (void* ptr : chunks[i][j].particles) {
+    //             Particle* particle = (Particle*)ptr;
 
-                if (particle->particleIndex == samplePoint->particleIndex)
-                    continue;
+    //             if (particle->particleIndex == samplePoint->particleIndex)
+    //                 continue;
 
-                Vector2 diff = {particle->position.x - samplePoint->position.x, particle->position.y - samplePoint->position.y};
-                float dst = magnitude(diff);
+    //             Vector2 diff = {particle->position.x - samplePoint->position.x, particle->position.y - samplePoint->position.y};
+    //             float dst = magnitude(diff);
 
-                // Prevent division by zero or very small distance issues
-                if (dst <= 0.001f) {
-                    continue;
-                }
+    //             // Prevent division by zero or very small distance issues
+    //             if (dst <= 0.001f) {
+    //                 continue;
+    //             }
 
-                Vector2 dir = normalize(diff);
-                float slope = SmoothingKernelDerivative(dst, smoothingRadius);
-                repelForce.x += dir.x * slope * REPEL_FORCE;
-                repelForce.y += dir.y * slope * REPEL_FORCE;
-            }
+    //             Vector2 dir = normalize(diff);
+    //             float slope = SmoothingKernelDerivative(dst, smoothingRadius);
+    //             repelForce.x += dir.x * slope * REPEL_FORCE;
+    //             repelForce.y += dir.y * slope * REPEL_FORCE;
+    //         }
+    //     }
+    // }
+    for (void* ptr : chunk->particles) {
+        Particle *particle = (Particle *)ptr;
+
+        if (particle->particleIndex == samplePoint->particleIndex)
+            continue;
+
+        Vector2 diff = {particle->position.x - samplePoint->position.x, particle->position.y - samplePoint->position.y};
+        float dst = magnitude(diff);
+
+        // Prevent division by zero or very small distance issues
+        if (dst <= 0.001f)
+        {
+            continue;
         }
+
+        Vector2 dir = normalize(diff);
+        float slope = SmoothingKernelDerivative(dst, smoothingRadius);
+        repelForce.x += dir.x * slope * REPEL_FORCE;
+        repelForce.y += dir.y * slope * REPEL_FORCE;
     }
     return repelForce;
 
