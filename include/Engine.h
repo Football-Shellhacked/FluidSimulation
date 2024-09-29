@@ -4,14 +4,14 @@
 #include "Particle.h"
 
 
-#define WORLD_BOUND_X 1280
-#define WORLD_BOUND_Y 800
+#define WORLD_BOUND_X 1000
+#define WORLD_BOUND_Y 720
 
 extern float GRAVITY;
 
 #define FIXED_DTIME 8.0f
 
-#define REPEL_FORCE 500
+extern float REPEL_FORCE;
 
 extern int NUM_PARTICLES;
 
