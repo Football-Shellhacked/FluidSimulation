@@ -6,14 +6,9 @@
 #include "resource_dir.h"
 #include "FunFeature.h"
 
-<<<<<<< HEAD
-int amtWChunks = 7;
-int amtHChunks = 4;
-=======
 extern Particle* particles;
 int amtWChunks = 10;
 int amtHChunks = 5;
->>>>>>> ad8b5ff (Added color changing functionality)
 
 	Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN, RAYWHITE};
 	const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN", "RAYWHITE"};
@@ -58,9 +53,6 @@ int main()
 
     Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
 
-<<<<<<< HEAD
-    Rectangle repelSliderBox = { 10, 200, 350, 15 };
-=======
 	bool dropdownActive2 = false; 
 	Rectangle dropdownBox2 = {1065, 445, 200, 30};
 
@@ -70,7 +62,6 @@ int main()
 	int dropdownSelection = -1;
 
 
->>>>>>> ad8b5ff (Added color changing functionality)
 
     // Check if shaders are loaded correctly
     if (blurStrengthLocationH == -1 || blurStrengthLocationV == -1) {
@@ -201,27 +192,28 @@ int main()
 		DrawText(colorNames[selectedColorIndex], dropdownBox.x + 10, dropdownBox.y + 5, 20, RAYWHITE); 
 		DrawRectangleLines(dropdownBox.x, dropdownBox.y, dropdownBox.width, dropdownBox.height, RAYWHITE);
 
-		
-	
-		if (dropdownActive) {
-			
-			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++) {
-                    Rectangle optionBox = {dropdownBox.x, dropdownBox.y + (i + 1) * 30, dropdownBox.width, 30};
-					DrawRectangleRec(optionBox, LIGHTGRAY);
-					DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
-					DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
+		if (dropdownActive)
+		{
 
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-						if (CheckCollisionPointRec(mousePosition, optionBox)) {
-                        printf("Clicked on option: %s\n", colorNames[i]);
-                        selectedColorIndex = i;  // Update selected color
-                        dropdownActive = false;  // Close the dropdown
+			for (int i = 0; i < sizeof(colorNames) / sizeof(colorNames[0]); i++)
+			{
+				Rectangle optionBox = {dropdownBox.x, dropdownBox.y + (i + 1) * 30, dropdownBox.width, 30};
+				DrawRectangleRec(optionBox, LIGHTGRAY);
+				DrawText(colorNames[i], optionBox.x, optionBox.y + 5, 20, RAYWHITE);
+				DrawRectangleLines(optionBox.x, optionBox.y, optionBox.width, optionBox.height, RAYWHITE);
+
+				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+				{
+					if (CheckCollisionPointRec(mousePosition, optionBox))
+					{
+						printf("Clicked on option: %s\n", colorNames[i]);
+						selectedColorIndex = i; // Update selected color
+						dropdownActive = false; // Close the dropdown
 						slowColor = availableColors[i];
-                        break;
-		
-                    }
+						break;
+					}
 				}
-			}	
+			}
 		}
 
 		if (dropdownActive2)
@@ -255,17 +247,7 @@ int main()
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
 		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
-<<<<<<< HEAD
-        char sliderBuf[32];
-        sprintf(sliderBuf, "GRAVITY SLIDER: %0.2f", GRAVITY);
-		DrawText(sliderBuf, 370, 98, 20, GRAY);
-
-        REPEL_FORCE = FunFeatures::DrawSlider(repelSliderBox, -1000.0f, 1000.0f, REPEL_FORCE, WHITE);
-        sprintf(sliderBuf, "REPEL FORCE SLIDER: %0.2f", REPEL_FORCE);
-		DrawText(sliderBuf, 370, 200, 20, GRAY);
-=======
 		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY); 
->>>>>>> ad8b5ff (Added color changing functionality)
 
         FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
 
