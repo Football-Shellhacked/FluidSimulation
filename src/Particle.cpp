@@ -18,7 +18,7 @@ Particle::Particle(){
 Color slowColor = BLUE;
 Color fastColor = WHITE;
 
-void Particle::InterpolateColor(){
+Color Particle::InterpolateColor(){
     float val = magnitude(velocity)/MAX_VELOCITY;
     if (val < 0.0f) val = 0.0f;
     if (val > 1.0f) val = 1.0f;
@@ -31,7 +31,7 @@ void Particle::InterpolateColor(){
     result.a = static_cast<unsigned char>(std::round(slowColor.a + (fastColor.a - slowColor.a) * val));
 
     color = result;
-
+    return result;
 }
 
 Particle::Particle(float x, float y, float vx, float vy, float radius){

@@ -178,8 +178,8 @@ int main()
 
         // Draw UI elements on top of the blurred texture
         if (PAUSED) {
-            DrawRectangle(1150, 60, 20, 60, LIGHTGRAY);
-            DrawRectangle(1180, 60, 20, 60, LIGHTGRAY);
+            DrawRectangle(WORLD_BOUND_X/2-15, WORLD_BOUND_Y/2 - 30, 20, 60, LIGHTGRAY);
+            DrawRectangle(WORLD_BOUND_X/2+15, WORLD_BOUND_Y/2 - 30, 20, 60, LIGHTGRAY);
         }	
 
 
