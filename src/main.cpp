@@ -39,6 +39,10 @@ int main()
     int blurStrengthLocationV = GetShaderLocation(blurVShader, "blurStrength");
     float blurStrength = 3.0f;
 
+    Rectangle cursorCheckbox = {WORLD_BOUND_X-100, 50, 50, 50};
+
+    Rectangle useGravityBox = {WORLD_BOUND_X-100, 150, 50, 50}; 
+
     // Check if shaders are loaded correctly
     if (blurStrengthLocationH == -1 || blurStrengthLocationV == -1) {
         printf("Failed to get shader location for 'blurStrength'\n");
@@ -129,7 +133,12 @@ int main()
         if (mouseOnParticle) DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, RED);
         else DrawRectangleLines((int)particleBox.x, (int)particleBox.y, (int)particleBox.width, (int)particleBox.height, DARKGRAY);
         DrawText(particledigit, (int)particleBox.x + 5, (int)particleBox.y + 8, 40, RED);
+		GRAVITY = -FunFeatures::DrawSlider(gravityBox, -20.0f, 20.0f, -GRAVITY, WHITE);
+		DrawText("GRAVITY SLIDER", 370, 98, 20, GRAY);
 
+        FunFeatures::cursorInteraction = FunFeatures::DrawCheckboxWithLabel(cursorCheckbox, FunFeatures::cursorInteraction, "Cursor Interaction", DARKGRAY); 
+
+        FunFeatures::useGravity = FunFeatures::DrawCheckboxWithLabel(useGravityBox, FunFeatures::useGravity, "Gravity Enabled", DARKGRAY); 
         EndDrawing();
     }
 
