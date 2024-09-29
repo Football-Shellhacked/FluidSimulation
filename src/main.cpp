@@ -110,7 +110,7 @@ int main()
         // Apply horizontal blur to the scene texture
         BeginTextureMode(blurTexture);
         BeginShaderMode(blurHShader);
-        DrawTextureRec(sceneTexture.texture, (Rectangle){0, 0, sceneTexture.texture.width, -sceneTexture.texture.height}, (Vector2){0, 0}, WHITE);
+        DrawTextureRec(sceneTexture.texture, (Rectangle){0, 0, (float)sceneTexture.texture.width, -(float)sceneTexture.texture.height}, (Vector2){0, 0}, WHITE);
         EndShaderMode();
         EndTextureMode();
 
@@ -118,7 +118,7 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
         BeginShaderMode(blurVShader);
-        DrawTextureRec(blurTexture.texture, (Rectangle){0, 0, blurTexture.texture.width, -blurTexture.texture.height}, (Vector2){0, 0}, WHITE);
+        DrawTextureRec(blurTexture.texture, (Rectangle){0, 0, (float)blurTexture.texture.width, -(float)blurTexture.texture.height}, (Vector2){0, 0}, WHITE);
         EndShaderMode();
 
         // Draw UI elements on top of the blurred texture
