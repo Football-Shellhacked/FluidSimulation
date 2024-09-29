@@ -9,6 +9,11 @@
 int amtWChunks = 7;
 int amtHChunks = 4;
 
+/* Color availableColors[] = {RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, MAROON, LIME, VIOLET, BROWN};
+	const char* colorNames[] = {"RED", "GREEN", "BLUE", "YELLOW", "ORANGE", "PURPLE", "MAROON", "LIME", "VIOLET", "BROWN"};
+*/
+
+
 extern float clamp(float val, float min, float max);
 
 int main()
